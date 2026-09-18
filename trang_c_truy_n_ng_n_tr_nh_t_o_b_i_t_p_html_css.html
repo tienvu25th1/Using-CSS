@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Đọc Truyện Ngắn - Bài Tập HTML/CSS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Vietnamese Reading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Variables for Dynamic Reader Themes */
+        :root {
+            --bg-primary: #FAFAFA;
+            --bg-card: #FFFFFF;
+            --text-primary: #1F2937;
+            --text-muted: #6B7280;
+            --accent-color: #2563EB;
+            --border-color: #E5E7EB;
+            --story-font: 'Merriweather', serif;
+            --story-size: 18px;
+            --story-lh: 1.8;
+        }
+
+        /* Sepia Reader Theme */
+        .theme-sepia {
+            --bg-primary: #F8F1E5;
+            --bg-card: #EFE6D5;
+            --text-primary: #433422;
+            --text-muted: #796651;
+            --accent-color: #92400E;
+            --border-color: #E2D5C3;
+        }
+
+        /* Dark Reader Theme */
+        .theme-dark {
+            --bg-primary: #111827;
+            --bg-card: #1F2937;
+            --text-primary: #F3F4F6;
+            --text-muted: #9CA3AF;
+            --accent-color: #60A5FA;
+            --border-color: #374151;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Be Vietnam Pro', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .story-body {
+            font-family: var(--story-font);
+            font-size: var(--story-size);
+            line-height: var(--story-lh);
+        }
+
+        .story-body p {
+            margin-bottom: 1.5em;
+            text-align: justify;
+            text-indent: 1.8em;
+        }
+
+        .story-body p::first-letter {
+            font-size: 1.25em;
+            font-weight: 600;
+        }
+
+        .reader-card {
+            background-color: var(--bg-card);
+            border-color: var(--border-color);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        /* Reading Progress Bar */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+            z-index: 50;
+            width: 0%;
+            transition: width 0.1s ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Reading Progress Indicator -->
+    <div id="progress-bar"></div>
+
+    <!-- Application Top Bar -->
+    <header class="sticky top-0 z-40 bg-slate-900 text-white shadow-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-xl shadow-lg">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Trang Đọc Truyện Ngắn</h1>
+                    <p class="text-xs text-blue-400 font-medium">Bài Tập Thực Hành HTML5 & CSS3</p>
+                </div>
+            </div>
+
+            <!-- View Switcher Tabs -->
+            <div class="flex items-center gap-2 bg-slate-800 p-1 rounded-xl border border-slate-700">
+                <button id="tab-reader-btn" onclick="switchTab('reader')" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all bg-blue-600 text-white shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-book-reader"></i>
+                    <span>Chế Độ Đọc</span>
+                </button>
+                <button id="tab-code-btn" onclick="switchTab('code')" class="px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-code"></i>
+                    <span>Mã Nguồn Bài Tập</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow">
+        
+        <!-- SECTION 1: INTERACTIVE READER APP -->
+        <div id="view-reader" class="py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-8">
+
+            <!-- Floating Reader Toolbar / Customizer -->
+            <div class="reader-card p-4 rounded-2xl shadow-sm border flex flex-wrap items-center justify-between gap-4 sticky top-20 z-30 backdrop-blur-md bg-opacity-90">
+                <!-- Theme Switcher -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mr-1">Chế độ:</span>
+                    <button onclick="setTheme('light')" class="px-3 py-1.5 text-xs font-semibold rounded-lg border bg-white text-gray-800 border-gray-300 hover:shadow-sm flex items-center gap-1.5">
+                        <span class="w-3 h-3 rounded-full bg-white border border-gray-400"></span> Sáng
+                    </button>
+                    <button onclick="setTheme('sepia')" class="px-3 py-1.5 text-xs font-semibold rounded-lg border bg-[#F8F1E5] text-[#433422] border-[#E2D5C3] hover:shadow-sm flex items-center gap-1.5">
+                        <span class="w-3 h-3 rounded-full bg-[#EFE6D5] border border-[#796651]"></span> Giấy Cổ
+                    </button>
+                    <button onclick="setTheme('dark')" class="px-3 py-1.5 text-xs font-semibold rounded-lg border bg-gray-900 text-gray-100 border-gray-700 hover:shadow-sm flex items-center gap-1.5">
+                        <span class="w-3 h-3 rounded-full bg-gray-800 border border-gray-500"></span> Tối
+                    </button>
+                </div>
+
+                <!-- Font controls -->
+                <div class="flex items-center gap-4 flex-wrap">
+                    <!-- Font Family -->
+                    <div class="flex items-center gap-1">
+                        <span class="text-xs text-slate-500 font-medium">Font:</span>
+                        <select onchange="setFontFamily(this.value)" class="text-xs p-1.5 rounded-lg border bg-transparent font-medium focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            <option value="'Merriweather', serif">Merriweather (Có chân)</option>
+                            <option value="'Be Vietnam Pro', sans-serif">Be Vietnam (Không chân)</option>
+                            <option value="'Roboto Mono', monospace">Roboto Mono (Máy tính)</option>
+                        </select>
+                    </div>
+
+                    <!-- Font Size Adjuster -->
+                    <div class="flex items-center gap-1">
+                        <button onclick="changeFontSize(-1)" class="w-7 h-7 rounded-lg border flex items-center justify-center hover:bg-black/5 font-bold text-sm" title="Giảm cỡ chữ">A-</button>
+                        <span id="font-size-display" class="text-xs font-semibold w-10 text-center">18px</span>
+                        <button onclick="changeFontSize(1)" class="w-7 h-7 rounded-lg border flex items-center justify-center hover:bg-black/5 font-bold text-sm" title="Tăng cỡ chữ">A+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STORY PAPER ARTICLE CONTAINER -->
+            <article class="reader-card p-6 sm:p-10 rounded-3xl shadow-lg border transition-all duration-300">
+                
+                <!-- BƯỚC 4: Tạo ảnh truyện đặt ở đầu trang -->
+                <div class="mb-8 overflow-hidden rounded-2xl shadow-md border relative group">
+                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80" 
+                         alt="Bìa truyện ngắn - Dế Mèn Phiêu Lưu Ký" 
+                         class="w-full h-64 sm:h-80 md:h-96 object-cover object-center transform group-hover:scale-105 transition-transform duration-700"
+                         onerror="this.onerror=null; this.src='https://placehold.co/1200x500/1e293b/ffffff?text=Anh+Bia+Truyen+Ngan';">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-6 sm:p-8 text-white">
+                        <span class="inline-block px-3 py-1 bg-blue-600 text-xs font-bold uppercase tracking-wider rounded-full w-fit mb-2">Tác Phẩm Kinh Điển</span>
+                        <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2">Dế Mèn Phiêu Lưu Ký</h1>
+                        <p class="text-sm sm:text-base text-gray-200 opacity-90 flex items-center gap-4">
+                            <span><i class="fa-solid fa-pen-nib mr-1"></i> Tác giả: Tô Hoài</span>
+                            <span><i class="fa-solid fa-clock mr-1"></i> Thời gian đọc: ~5 phút</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Story Metadata & Description -->
+                <div class="p-4 rounded-xl mb-8 border border-dashed border-blue-300 bg-blue-50/30 text-sm">
+                    <p class="font-medium text-blue-900 leading-relaxed italic">
+                        "Dế Mèn Phiêu Lưu Ký là tác phẩm văn học thiếu nhi nổi tiếng nhất của nhà văn Tô Hoài. Câu chuyện kể về những chuyến phiêu lưu đầy sóng gió nhưng giàu bài học nghĩa khí của chú Dế Mèn kiêu ngạo dần trưởng thành."
+                    </p>
+                </div>
+
+                <!-- BƯỚC 1, 3 & 5: MỤC LỤC TRUYỆN MẪU BÀI TẬP -->
+                <nav class="mb-12 p-6 rounded-2xl border bg-black/5 backdrop-blur-sm">
+                    <div class="flex items-center gap-2 mb-4 pb-2 border-b border-gray-300">
+                        <i class="fa-solid fa-[#2563eb] fa-list-ul text-xl"></i>
+                        <!-- BƯỚC 1: Tiêu đề mục lục -->
+                        <h3 class="font-bold text-xl uppercase tracking-wide">Mục Lục Truyện</h3>
+                    </div>
+                    
+                    <ul class="space-y-3">
+                        <!-- BƯỚC 3 & 5: Thẻ <h5> cho từng mục lục và liên kết anchor -->
+                        <li>
+                            <a href="#chuong-1" class="group flex items-center p-3 rounded-xl hover:bg-blue-500/10 transition-all border border-transparent hover:border-blue-300">
+                                <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm mr-3 shadow-sm group-hover:scale-110 transition-transform">1</span>
+                                <!-- BƯỚC 5: Thẻ <h5> cho từng mục lục -->
+                                <h5 class="font-semibold text-base sm:text-lg text-inherit group-hover:text-blue-600 transition-colors">
+                                    Chương 1: Tôi ra đời và bài học đường đời đầu tiên
+                                </h5>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#chuong-2" class="group flex items-center p-3 rounded-xl hover:bg-blue-500/10 transition-all border border-transparent hover:border-blue-300">
+                                <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm mr-3 shadow-sm group-hover:scale-110 transition-transform">2</span>
+                                <!-- BƯỚC 5: Thẻ <h5> cho từng mục lục -->
+                                <h5 class="font-semibold text-base sm:text-lg text-inherit group-hover:text-blue-600 transition-colors">
+                                    Chương 2: Cuộc phiêu lưu bất ngờ cùng Dế Trũi
+                                </h5>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#chuong-3" class="group flex items-center p-3 rounded-xl hover:bg-blue-500/10 transition-all border border-transparent hover:border-blue-300">
+                                <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm mr-3 shadow-sm group-hover:scale-110 transition-transform">3</span>
+                                <!-- BƯỚC 5: Thẻ <h5> cho từng mục lục -->
+                                <h5 class="font-semibold text-base sm:text-lg text-inherit group-hover:text-blue-600 transition-colors">
+                                    Chương 3: Kết bạn bốn phương và lời thề thế giới hòa bình
+                                </h5>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <hr class="my-8 border-gray-200">
+
+                <!-- BƯỚC 2: NỘI DUNG ỨNG VỚI TỪNG MỤC LỤC TRUYỆN -->
+                <div class="story-body space-y-12">
+                    
+                    <!-- CHƯƠNG 1 -->
+                    <section id="chuong-1" class="scroll-mt-28">
+                        <div class="flex items-center gap-3 mb-4 pb-2 border-b-2 border-blue-500">
+                            <span class="text-xs font-bold uppercase tracking-widest px-2.5 py-1 bg-blue-100 text-blue-800 rounded-md">Chương I</span>
+                            <h2 class="text-2xl sm:text-3xl font-bold">Tôi ra đời và bài học đường đời đầu tiên</h2>
+                        </div>
+                        <p>
+                            Bởi tôi ăn uống độ lượng và làm việc có chừng mực nên tôi chóng lớn lắm. Chẳng bao lâu, tôi đã trở thành một gã Dế Mèn thanh niên cường tráng. Đôi càng tôi mẫm bóng. Những cái vuốt ở chân, ở khoeo cứ cứng dần và nhọn hoắt. Thỉnh thoảng, muốn thử sự lợi hại của những chiếc vuốt, tôi co cẳng lên, đạp phanh phách vào các ngọn cỏ. Những ngọn cỏ gãy rạp, y như có nhát dao vừa liềm qua.
+                        </p>
+                        <p>
+                            Tôi tợn lắm. Tôi chọc ghẹo tất cả mọi người hàng xóm. Khi tôi đi bách bộ thì cả bà Con Kiến, anh Cào Cào cũng phải kiêng nể. Nhưng sự đời trớ trêu, cái thói hung hăng bồng bột chỉ làm hại mình và làm hại người khác mà thôi. Tôi đã gây ra cái chết thảm thương cho anh Dế Choắt - người bạn hàng xóm yếu ớt.
+                        </p>
+                        <p>
+                            Trước khi nhắm mắt, Choắt khuyên tôi: "Ở đời mà có thói hung hăng bồng bột, óc nghĩ không sâu sắc, sớm muộn rồi cũng mang họa vào mình đấy!". Đó là bài học đường đời đầu tiên mà tôi phải ghi nhớ suốt đời.
+                        </p>
+                    </section>
+
+                    <!-- CHƯƠNG 2 -->
+                    <section id="chuong-2" class="scroll-mt-28">
+                        <div class="flex items-center gap-3 mb-4 pb-2 border-b-2 border-blue-500">
+                            <span class="text-xs font-bold uppercase tracking-widest px-2.5 py-1 bg-blue-100 text-blue-800 rounded-md">Chương II</span>
+                            <h2 class="text-2xl sm:text-3xl font-bold">Cuộc phiêu lưu bất ngờ cùng Dế Trũi</h2>
+                        </div>
+                        <p>
+                            Sau biến cố ấy, tôi quyết định rời khỏi hang quê nhà để đi chu du thiên hạ, mở rộng tầm mắt và rèn luyện bản thân. Trên đường đi, tôi gặp Dế Trũi - một gã giang hồ sông nước, tính tình bộc trực, nóng nảy nhưng rất tận tụy và giàu lòng vị tha.
+                        </p>
+                        <p>
+                            Chúng tôi kết nghĩa anh em, thề cùng nhau sinh tử có nhau trên khắp nẻo đường phiêu lưu. Nhớ có lần bị rơi vào bẫy của lũ trẻ con, rồi lại vượt qua sông lớn bằng chiếc lá sen khô, tôi và Dế Trũi đã phải nương tựa vào nhau để vượt qua bao hiểm nguy rình rập.
+                        </p>
+                        <p>
+                            Chính những ngày tháng dãi nắng dầm sương cùng Trũi đã giúp tôi hiểu được giá trị thực sự của tình bạn chân thành và sự khiêm tốn ở đời.
+                        </p>
+                    </section>
+
+                    <!-- CHƯƠNG 3 -->
+                    <section id="chuong-3" class="scroll-mt-28">
+                        <div class="flex items-center gap-3 mb-4 pb-2 border-b-2 border-blue-500">
+                            <span class="text-xs font-bold uppercase tracking-widest px-2.5 py-1 bg-blue-100 text-blue-800 rounded-md">Chương III</span>
+                            <h2 class="text-2xl sm:text-3xl font-bold">Kết bạn bốn phương và lời thề hòa bình</h2>
+                        </div>
+                        <p>
+                            Đi qua muôn vàn vương quốc của muông thú: từ đầm lầy của họ Nhà Muỗm, đồng cỏ của Chuồn Chuồn đến làng mạc của Bọ Ngựa, chúng tôi nhận ra rằng ai ai cũng khao khát một cuộc sống hòa bình, tự do và không có chiến tranh tranh giành lãnh địa.
+                        </p>
+                        <p>
+                            Tôi và Dế Trũi đứng ra kêu gọi muôn loài cùng nhau kết nghĩa anh em, xóa bỏ hận thù. Lời kêu gọi chân thành ấy được vô số loài côn trùng hưởng ứng nhiệt liệt. Một hội thề hòa bình đã được tổ chức rộn rã trong tiếng ca tiếng hát của mùa hè.
+                        </p>
+                        <p>
+                            Chuyến phiêu lưu không chỉ làm tôi lớn lên về thể xác mà còn biến một chú Dế Mèn kiêu ngạo ngày nào thành một người bạn chí tình của khắp muôn loài.
+                        </p>
+                    </section>
+
+                </div>
+
+                <!-- Back to Top Floating Button -->
+                <div class="mt-12 text-center">
+                    <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-all shadow-md">
+                        <i class="fa-solid fa-arrow-up"></i> Trở về đầu trang
+                    </a>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- SECTION 2: EXPORT SOURCE CODE FOR ASSIGNMENT SUBMISSION -->
+        <div id="view-code" class="hidden py-8 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-6">
+            
+            <!-- Explanation Card -->
+            <div class="bg-slate-800 border border-slate-700 text-white p-6 rounded-2xl shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-square-check text-green-400"></i> Mã Nguồn Đáp Ứng Đầy Đủ 5 Bước Bài Tập
+                    </h2>
+                    <p class="text-xs text-slate-300 mt-1">
+                        Mã HTML & CSS bên dưới đã được chuẩn hóa gọn gàng theo yêu cầu đề bài. Bạn có thể sao chép hoặc tải file <code class="text-yellow-300">index.html</code> về máy để nộp bài lập tức.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <button onclick="copySourceCode()" class="flex-1 md:flex-none px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg">
+                        <i class="fa-regular fa-copy"></i> Sao chép mã
+                    </button>
+                    <button onclick="downloadSourceCode()" class="flex-1 md:flex-none px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-download"></i> Tải index.html
+                    </button>
+                </div>
+            </div>
+
+            <!-- Steps Checklist Status -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+                <div class="p-3 bg-slate-800/80 border border-slate-700 rounded-xl text-xs text-slate-200">
+                    <span class="text-green-400 font-bold block mb-1">✓ Bước 1</span>
+                    Mục lục truyện rõ ràng
+                </div>
+                <div class="p-3 bg-slate-800/80 border border-slate-700 rounded-xl text-xs text-slate-200">
+                    <span class="text-green-400 font-bold block mb-1">✓ Bước 2</span>
+                    Nội dung ứng với mục lục
+                </div>
+                <div class="p-3 bg-slate-800/80 border border-slate-700 rounded-xl text-xs text-slate-200">
+                    <span class="text-green-400 font-bold block mb-1">✓ Bước 3</span>
+                    Liên kết Anchor point
+                </div>
+                <div class="p-3 bg-slate-800/80 border border-slate-700 rounded-xl text-xs text-slate-200">
+                    <span class="text-green-400 font-bold block mb-1">✓ Bước 4</span>
+                    Ảnh bìa ở đầu trang
+                </div>
+                <div class="p-3 bg-slate-800/80 border border-slate-700 rounded-xl text-xs text-slate-200">
+                    <span class="text-green-400 font-bold block mb-1">✓ Bước 5</span>
+                    Dùng thẻ &lt;h5&gt; cho mục lục
+                </div>
+            </div>
+
+            <!-- Code Editor Box -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+                <div class="bg-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                        <span class="text-xs text-slate-400 font-mono ml-2">index.html (Mã nộp bài tập)</span>
+                    </div>
+                    <span class="text-xs text-slate-500 font-mono">HTML5 + CSS</span>
+                </div>
+                <pre class="p-6 text-xs sm:text-sm text-slate-300 font-mono overflow-x-auto leading-relaxed max-h-[600px]" id="code-display"></pre>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Toast Notification Message -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl border border-slate-700 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3 z-50">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-green-400 text-lg"></i>
+        <span id="toast-message" class="text-sm font-medium">Đã sao chép thành công!</span>
+    </div>
+
+    <script>
+        // Store current states
+        let currentFontSize = 18;
+
+        // Change Viewport Tab (Reader mode vs Code view)
+        function switchTab(tab) {
+            const readerView = document.getElementById('view-reader');
+            const codeView = document.getElementById('view-code');
+            const readerBtn = document.getElementById('tab-reader-btn');
+            const codeBtn = document.getElementById('tab-code-btn');
+
+            if (tab === 'reader') {
+                readerView.classList.remove('hidden');
+                codeView.classList.add('hidden');
+                
+                readerBtn.className = 'px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all bg-blue-600 text-white shadow-sm flex items-center gap-2';
+                codeBtn.className = 'px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-2';
+            } else {
+                readerView.classList.add('hidden');
+                codeView.classList.remove('hidden');
+
+                codeBtn.className = 'px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all bg-blue-600 text-white shadow-sm flex items-center gap-2';
+                readerBtn.className = 'px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-2';
+                
+                renderCodeView();
+            }
+        }
+
+        // Change Theme (Light, Sepia, Dark)
+        function setTheme(theme) {
+            document.body.classList.remove('theme-sepia', 'theme-dark');
+            if (theme === 'sepia') {
+                document.body.classList.add('theme-sepia');
+            } else if (theme === 'dark') {
+                document.body.classList.add('theme-dark');
+            }
+            showToast(`Đã chuyển giao diện: ${theme === 'light' ? 'Sáng' : theme === 'sepia' ? 'Giấy Cổ' : 'Ban Đêm'}`);
+        }
+
+        // Change Font Size
+        function changeFontSize(delta) {
+            currentFontSize = Math.min(Math.max(14, currentFontSize + delta), 28);
+            document.documentElement.style.setProperty('--story-size', `${currentFontSize}px`);
+            document.getElementById('font-size-display').innerText = `${currentFontSize}px`;
+        }
+
+        // Change Font Family
+        function setFontFamily(font) {
+            document.documentElement.style.setProperty('--story-font', font);
+        }
+
+        // Scroll Progress Indicator
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+        });
+
+        // Toast Notification System
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Raw Assignment Source Code String Template
+        function getCleanAssignmentCode() {
+            return `<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Tập: Trang Đọc Truyện Ngắn</title>
+    <style>
+        /* CSS Trang trí cơ bản cho trang đọc truyện */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* BƯỚC 4: Trang trí ảnh truyện ở đầu trang */
+        .story-cover {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .story-title {
+            text-align: center;
+            color: #1a202c;
+            margin-bottom: 5px;
+        }
+
+        .author {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        /* BƯỚC 1: Khung mục lục */
+        .table-of-contents {
+            background-color: #eef2ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .table-of-contents h3 {
+            margin-top: 0;
+            color: #1d4ed8;
+        }
+
+        .table-of-contents ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .table-of-contents li {
+            margin-bottom: 10px;
+        }
+
+        /* BƯỚC 3: Kiểu dáng liên kết mục lục */
+        .table-of-contents a {
+            text-decoration: none;
+            color: #2563eb;
+            transition: color 0.2s;
+        }
+
+        .table-of-contents a:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
+        /* BƯỚC 5: Thẻ h5 trong mục lục */
+        .table-of-contents h5 {
+            display: inline;
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* BƯỚC 2: Định dạng nội dung truyện */
+        .chapter {
+            margin-bottom: 35px;
+            padding-top: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .chapter h4 {
+            color: #0f172a;
+            font-size: 20px;
+            border-left: 3px solid #10b981;
+            padding-left: 10px;
+        }
+
+        .chapter p {
+            text-align: justify;
+            text-indent: 20px;
+            font-size: 16px;
+            color: #334155;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- BƯỚC 4: Tạo ảnh truyện đặt ở đầu trang -->
+        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800" alt="Ảnh bìa Dế Mèn Phiêu Lưu Ký" class="story-cover">
+
+        <h1 class="story-title">DẾ MÈN PHIÊU LƯU KÝ</h1>
+        <p class="author">Tác giả: Tô Hoài</p>
+
+        <!-- BƯỚC 1: Tạo các mục lục truyện -->
+        <div class="table-of-contents">
+            <h3>MỤC LỤC TRUYỆN</h3>
+            <ul>
+                <!-- BƯỚC 3: Liên kết từng mục lục (Anchor links #chuong-1) -->
+                <!-- BƯỚC 5: Sử dụng thẻ <h5> cho từng mục lục truyện -->
+                <li>
+                    <a href="#chuong-1">
+                        <h5>Chương 1: Bài học đường đời đầu tiên</h5>
+                    </a>
+                </li>
+                <li>
+                    <a href="#chuong-2">
+                        <h5>Chương 2: Cuộc phiêu lưu cùng Dế Trũi</h5>
+                    </a>
+                </li>
+                <li>
+                    <a href="#chuong-3">
+                        <h5>Chương 3: Lời thề hòa bình muôn loài</h5>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- BƯỚC 2: Tạo nội dung ứng với từng mục lục truyện -->
+        <div class="story-content">
+            
+            <div id="chuong-1" class="chapter">
+                <h4>Chương 1: Bài học đường đời đầu tiên</h4>
+                <p>
+                    Bởi tôi ăn uống độ lượng và làm việc có chừng mực nên tôi chóng lớn lắm. Chẳng bao lâu, tôi đã trở thành một gã Dế Mèn thanh niên cường tráng. Đôi càng tôi mẫm bóng. Những cái vuốt ở chân, ở khoeo cứ cứng dần và nhọn hoắt.
+                </p>
+                <p>
+                    Tuy nhiên, cái thói hung hăng bồng bột chỉ làm hại mình và người khác. Sau tai nạn thương tâm gây ra cho anh Dế Choắt, tôi đã rút ra bài học đường đời đầu tiên sâu sắc.
+                </p>
+            </div>
+
+            <div id="chuong-2" class="chapter">
+                <h4>Chương 2: Cuộc phiêu lưu cùng Dế Trũi</h4>
+                <p>
+                    Tôi quyết định rời quê nhà đi phiêu lưu. Trên đường đi, tôi gặp Dế Trũi - một người bạn bộc trực, nghĩa khí. Chúng tôi kết nghĩa anh em và cùng vượt qua bao gian khó trên đường đời.
+                </p>
+            </div>
+
+            <div id="chuong-3" class="chapter">
+                <h4>Chương 3: Lời thề hòa bình muôn loài</h4>
+                <p>
+                    Đi qua muôn nơi, chúng tôi nhận ra ai cũng khao khát hòa bình. Tôi và Dế Trũi đứng ra kêu gọi muôn loài kết nghĩa anh em, xóa bỏ hận thù, cùng sống hạnh phúc bên nhau.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>`;
+        }
+
+        // Render Code Preview with escaped HTML
+        function renderCodeView() {
+            const rawCode = getCleanAssignmentCode();
+            const escaped = rawCode
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+            
+            document.getElementById('code-display').innerHTML = escaped;
+        }
+
+        // Copy Code via standard fallback execution
+        function copySourceCode() {
+            const code = getCleanAssignmentCode();
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast("Đã sao chép toàn bộ mã nguồn vào Clipboard!");
+            } catch (err) {
+                showToast("Lỗi khi sao chép mã nguồn!");
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        // Download index.html File
+        function downloadSourceCode() {
+            const code = getCleanAssignmentCode();
+            const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Đã tải xuống file index.html thành công!");
+        }
+
+        // Initialize view on load
+        window.onload = function() {
+            renderCodeView();
+        };
+    </script>
+</body>
+</html>
