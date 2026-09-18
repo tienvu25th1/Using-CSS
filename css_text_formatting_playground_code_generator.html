@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Định Dạng Văn Bản Với CSS - Text Formatting Playground</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Typography Experiments -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                        roboto: ['Roboto', 'sans-serif'],
+                        montserrat: ['Montserrat', 'sans-serif'],
+                        merriweather: ['Merriweather', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .code-syntax-tag { color: #f43f5e; }
+        .code-syntax-attr { color: #fbbf24; }
+        .code-syntax-val { color: #34d399; }
+        .code-syntax-prop { color: #38bdf8; }
+        .code-syntax-unit { color: #c084fc; }
+        .code-syntax-comment { color: #64748b; font-style: italic; }
+        .code-syntax-selector { color: #f472b6; font-weight: 600; }
+    </style>
+</head>
+<body class="h-full font-sans text-slate-800 antialiased flex flex-col bg-slate-100">
+
+    <!-- Top Header -->
+    <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-xl shadow-md">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-base sm:text-lg font-bold bg-gradient-to-r from-white via-indigo-100 to-indigo-300 bg-clip-text text-transparent">
+                            CSS Text Formatting Studio
+                        </h1>
+                        <p class="text-[11px] text-slate-400 hidden sm:block">Luyện tập định dạng văn bản với CSS & Xuất mã nguồn tự động</p>
+                    </div>
+                </div>
+
+                <!-- Presets Quick Switcher -->
+                <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/60">
+                    <span class="text-xs font-semibold text-slate-400 px-2">Mẫu bài tập:</span>
+                    <button onclick="applyPreset('newspaper')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-700 hover:bg-indigo-600 text-white transition flex items-center space-x-1">
+                        <span>📰 Báo chí chuẩn</span>
+                    </button>
+                    <button onclick="applyPreset('poetry')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-700 hover:bg-purple-600 text-white transition flex items-center space-x-1">
+                        <span>📜 Thơ & Nghệ thuật</span>
+                    </button>
+                    <button onclick="applyPreset('blog')" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-700 hover:bg-emerald-600 text-white transition flex items-center space-x-1">
+                        <span>🚀 Blog Hiện đại</span>
+                    </button>
+                </div>
+
+                <!-- Export & Download Actions -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="downloadStandaloneHtml()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-md transition flex items-center space-x-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span>Tải file index.html</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Preset Switcher -->
+            <div class="md:hidden py-2 border-t border-slate-800 flex justify-between gap-1">
+                <button onclick="applyPreset('newspaper')" class="px-2 py-1 text-[11px] font-medium bg-slate-800 text-slate-200 rounded">📰 Báo chí</button>
+                <button onclick="applyPreset('poetry')" class="px-2 py-1 text-[11px] font-medium bg-slate-800 text-slate-200 rounded">📜 Thơ ca</button>
+                <button onclick="applyPreset('blog')" class="px-2 py-1 text-[11px] font-medium bg-slate-800 text-slate-200 rounded">🚀 Modern Blog</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- Main Workspace Layout -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT COLUMN: CSS Controls Sidebar (5 cols) -->
+        <aside class="lg:col-span-5 space-y-5">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden sticky top-20">
+                
+                <!-- Sidebar Header Tabs -->
+                <div class="bg-slate-50 p-2 border-b border-slate-200 grid grid-cols-3 gap-1">
+                    <button onclick="switchControlTab('h1')" id="tab-btn-h1" class="tab-control-btn px-3 py-2 text-xs font-bold rounded-lg transition bg-white text-indigo-600 shadow-sm border border-slate-200">
+                        1. Tiêu Đề (&lt;h1&gt;)
+                    </button>
+                    <button onclick="switchControlTab('p')" id="tab-btn-p" class="tab-control-btn px-3 py-2 text-xs font-bold rounded-lg transition text-slate-600 hover:text-slate-900">
+                        2. Đoạn Văn (&lt;p&gt;)
+                    </button>
+                    <button onclick="switchControlTab('quote')" id="tab-btn-quote" class="tab-control-btn px-3 py-2 text-xs font-bold rounded-lg transition text-slate-600 hover:text-slate-900">
+                        3. Trích Dẫn & Thẻ
+                    </button>
+                </div>
+
+                <!-- Controls Body -->
+                <div class="p-5 space-y-5 max-h-[calc(100vh-180px)] overflow-y-auto">
+
+                    <!-- SECTION 1: H1 CONTROLS -->
+                    <div id="controls-h1" class="control-panel-section space-y-4">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Định dạng Tiêu đề (Heading 1)</span>
+                            <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-mono font-semibold">selector: h1</span>
+                        </div>
+
+                        <!-- H1 Font Family & Weight -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Font Family</label>
+                                <select id="h1-font-family" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white focus:ring-2 ring-indigo-500">
+                                    <option value="'Montserrat', sans-serif">Montserrat (Sans)</option>
+                                    <option value="'Playfair Display', serif" selected>Playfair Display (Serif)</option>
+                                    <option value="'Merriweather', serif">Merriweather (Serif)</option>
+                                    <option value="'Roboto', sans-serif">Roboto (Sans)</option>
+                                    <option value="'Inter', sans-serif">Inter (Sans)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Font Weight</label>
+                                <select id="h1-font-weight" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white focus:ring-2 ring-indigo-500">
+                                    <option value="400">400 (Normal)</option>
+                                    <option value="600">600 (Semi Bold)</option>
+                                    <option value="700" selected>700 (Bold)</option>
+                                    <option value="800">800 (Extra Bold)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- H1 Text Align -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Căn lề (text-align)</label>
+                            <div class="grid grid-cols-4 gap-1.5 p-1 bg-slate-100 rounded-lg">
+                                <button onclick="setTextAlign('h1', 'left')" id="btn-h1-align-left" class="align-btn-h1 py-1 text-xs rounded font-medium transition text-center bg-white shadow text-indigo-600">Trái</button>
+                                <button onclick="setTextAlign('h1', 'center')" id="btn-h1-align-center" class="align-btn-h1 py-1 text-xs rounded font-medium transition text-center text-slate-600">Giữa</button>
+                                <button onclick="setTextAlign('h1', 'right')" id="btn-h1-align-right" class="align-btn-h1 py-1 text-xs rounded font-medium transition text-center text-slate-600">Phải</button>
+                                <button onclick="setTextAlign('h1', 'justify')" id="btn-h1-align-justify" class="align-btn-h1 py-1 text-xs rounded font-medium transition text-center text-slate-600">Đều</button>
+                            </div>
+                        </div>
+
+                        <!-- H1 Colors -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Màu chữ (color)</label>
+                                <div class="flex items-center space-x-2">
+                                    <input type="color" id="h1-color" value="#1e293b" oninput="updateAllStyles()" class="w-8 h-8 rounded border border-slate-300 p-0.5 cursor-pointer bg-white">
+                                    <span id="h1-color-val" class="font-mono text-xs text-slate-500 uppercase">#1E293B</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Màu nền chữ (bg)</label>
+                                <div class="flex items-center space-x-2">
+                                    <input type="color" id="h1-bg-color" value="#ffffff" oninput="updateAllStyles()" class="w-8 h-8 rounded border border-slate-300 p-0.5 cursor-pointer bg-white">
+                                    <span id="h1-bg-color-val" class="font-mono text-xs text-slate-500 uppercase">#FFFFFF</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- H1 Font Size & Line Height -->
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Kích thước chữ (font-size)</span>
+                                    <span id="h1-size-val" class="font-mono text-indigo-600 font-bold">28px</span>
+                                </div>
+                                <input type="range" id="h1-size" min="18" max="48" value="28" oninput="updateAllStyles()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Chiều cao dòng (line-height)</span>
+                                    <span id="h1-lineheight-val" class="font-mono text-indigo-600 font-bold">1.3</span>
+                                </div>
+                                <input type="range" id="h1-lineheight" min="1.0" max="2.2" step="0.1" value="1.3" oninput="updateAllStyles()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            </div>
+                        </div>
+
+                        <!-- H1 Text Transform & Style & Decoration -->
+                        <div class="grid grid-cols-2 gap-3 pt-1">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Chữ hoa/thường (text-transform)</label>
+                                <select id="h1-text-transform" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                    <option value="none">none (Mặc định)</option>
+                                    <option value="uppercase">uppercase (IN HOA)</option>
+                                    <option value="capitalize">capitalize (In Hoa Chữ Đầu)</option>
+                                    <option value="lowercase">lowercase (in thường)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Kiểu chữ (font-style)</label>
+                                <select id="h1-font-style" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                    <option value="normal">normal (Thẳng)</option>
+                                    <option value="italic">italic (In nghiêng)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- H1 Text Decoration & Shadow -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Gạch chân/ngang (text-decoration)</label>
+                                <select id="h1-text-decoration" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                    <option value="none">none (Không)</option>
+                                    <option value="underline">underline (Gạch chân)</option>
+                                    <option value="line-through">line-through (Gạch ngang)</option>
+                                    <option value="overline">overline (Gạch trên)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Đổ bóng chữ (text-shadow)</label>
+                                <select id="h1-text-shadow" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                    <option value="none">none (Không bóng)</option>
+                                    <option value="1px 1px 2px rgba(0,0,0,0.3)">Nhẹ (Soft Shadow)</option>
+                                    <option value="2px 2px 4px rgba(37,99,235,0.4)">Xanh Néon (Blue Glow)</option>
+                                    <option value="3px 3px 0px #cbd5e1">Retro 3D (Solid)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 2: PARAGRAPH CONTROLS -->
+                    <div id="controls-p" class="control-panel-section hidden space-y-4">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Định dạng Đoạn Văn (&lt;p&gt;)</span>
+                            <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-mono font-semibold">selector: p</span>
+                        </div>
+
+                        <!-- P Text Align -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Căn lề đoạn văn (text-align)</label>
+                            <div class="grid grid-cols-4 gap-1.5 p-1 bg-slate-100 rounded-lg">
+                                <button onclick="setTextAlign('p', 'left')" id="btn-p-align-left" class="align-btn-p py-1 text-xs rounded font-medium transition text-center text-slate-600">Trái</button>
+                                <button onclick="setTextAlign('p', 'center')" id="btn-p-align-center" class="align-btn-p py-1 text-xs rounded font-medium transition text-center text-slate-600">Giữa</button>
+                                <button onclick="setTextAlign('p', 'right')" id="btn-p-align-right" class="align-btn-p py-1 text-xs rounded font-medium transition text-center text-slate-600">Phải</button>
+                                <button onclick="setTextAlign('p', 'justify')" id="btn-p-align-justify" class="align-btn-p py-1 text-xs rounded font-medium transition text-center bg-white shadow text-indigo-600">Đều (Justify)</button>
+                            </div>
+                        </div>
+
+                        <!-- P Text Indent (HIGHLIGHTED CRITICAL CSS PROPERTY) -->
+                        <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-1.5">
+                            <div class="flex justify-between items-center text-xs font-bold text-amber-900">
+                                <span class="flex items-center space-x-1">
+                                    <span>Lùi đầu dòng (text-indent)</span>
+                                    <span class="text-[10px] bg-amber-200 text-amber-800 px-1.5 py-0.2 rounded">Trọng tâm</span>
+                                </span>
+                                <span id="p-indent-val" class="font-mono text-amber-700 font-bold">2.0em</span>
+                            </div>
+                            <input type="range" id="p-indent" min="0" max="4.0" step="0.2" value="2.0" oninput="updateAllStyles()" class="w-full h-1.5 bg-amber-200 rounded-lg appearance-none cursor-pointer accent-amber-600">
+                            <p class="text-[11px] text-amber-700 italic">Chú ý: Thuộc tính chuẩn là <strong>text-indent</strong> (không phải <em>text-identation</em>).</p>
+                        </div>
+
+                        <!-- P Color & Font Family -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Màu chữ (color)</label>
+                                <div class="flex items-center space-x-2">
+                                    <input type="color" id="p-color" value="#334155" oninput="updateAllStyles()" class="w-8 h-8 rounded border border-slate-300 p-0.5 cursor-pointer bg-white">
+                                    <span id="p-color-val" class="font-mono text-xs text-slate-500 uppercase">#334155</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Font Family</label>
+                                <select id="p-font-family" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                    <option value="'Roboto', sans-serif" selected>Roboto (Sans-serif)</option>
+                                    <option value="'Merriweather', serif">Merriweather (Serif)</option>
+                                    <option value="'Inter', sans-serif">Inter (Sans-serif)</option>
+                                    <option value="'Playfair Display', serif">Playfair Display (Serif)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- P Font Size, Line Height & Letter Spacing -->
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Cỡ chữ đoạn văn (font-size)</span>
+                                    <span id="p-size-val" class="font-mono text-indigo-600 font-bold">16px</span>
+                                </div>
+                                <input type="range" id="p-size" min="13" max="22" value="16" oninput="updateAllStyles()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Khoảng cách dòng (line-height)</span>
+                                    <span id="p-lineheight-val" class="font-mono text-indigo-600 font-bold">1.7</span>
+                                </div>
+                                <input type="range" id="p-lineheight" min="1.1" max="2.5" step="0.1" value="1.7" oninput="updateAllStyles()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Khoảng cách chữ (letter-spacing)</span>
+                                    <span id="p-letterspacing-val" class="font-mono text-indigo-600 font-bold">0px</span>
+                                </div>
+                                <input type="range" id="p-letterspacing" min="-1" max="5" step="0.5" value="0" oninput="updateAllStyles()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                            </div>
+                        </div>
+
+                        <!-- P Font Style & Transform -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Kiểu chữ (font-style)</label>
+                                <select id="p-font-style" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                    <option value="normal" selected>normal (Thường)</option>
+                                    <option value="italic">italic (Nghiêng)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Chuyển đổi (text-transform)</label>
+                                <select id="p-text-transform" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                    <option value="none" selected>none (Giữ nguyên)</option>
+                                    <option value="capitalize">capitalize (Viết Hoa Đầu Từ)</option>
+                                    <option value="lowercase">lowercase (viết thường)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 3: QUOTE & ADVANCED -->
+                    <div id="controls-quote" class="control-panel-section hidden space-y-4">
+                        <div class="flex items-center justify-between border-b pb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Trích Dẫn (&lt;blockquote&gt;) & Liên Kết</span>
+                            <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-mono font-semibold">selector: blockquote, a</span>
+                        </div>
+
+                        <!-- Blockquote styling -->
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                            <span class="text-xs font-bold text-slate-800">Khung Trích Dẫn (Blockquote)</span>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Màu viền trái</label>
+                                    <input type="color" id="quote-border-color" value="#6366f1" oninput="updateAllStyles()" class="w-full h-8 rounded border border-slate-300 p-0.5 cursor-pointer bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Màu nền blockquote</label>
+                                    <input type="color" id="quote-bg-color" value="#f8fafc" oninput="updateAllStyles()" class="w-full h-8 rounded border border-slate-300 p-0.5 cursor-pointer bg-white">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Kiểu chữ trích dẫn</label>
+                                <select id="quote-font-style" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                    <option value="italic" selected>italic (Nghiêng)</option>
+                                    <option value="normal">normal (Thường)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Link styling -->
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                            <span class="text-xs font-bold text-slate-800">Thẻ Liên Kết (&lt;a&gt;)</span>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Màu liên kết</label>
+                                    <input type="color" id="link-color" value="#2563eb" oninput="updateAllStyles()" class="w-full h-8 rounded border border-slate-300 p-0.5 cursor-pointer bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Gạch chân liên kết</label>
+                                    <select id="link-decoration" onchange="updateAllStyles()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                        <option value="underline" selected>underline (Gạch chân)</option>
+                                        <option value="none">none (Không gạch)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Paper Canvas Background -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Màu nền tờ báo / giấy (body bg)</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="color" id="canvas-bg" value="#ffffff" oninput="updateAllStyles()" class="w-8 h-8 rounded border border-slate-300 p-0.5 cursor-pointer bg-white">
+                                <span id="canvas-bg-val" class="font-mono text-xs text-slate-500 uppercase">#FFFFFF</span>
+                                <button onclick="setCanvasBg('#ffffff')" class="px-2 py-1 text-[10px] bg-white border border-slate-300 rounded hover:bg-slate-50">Sáng</button>
+                                <button onclick="setCanvasBg('#fefcbf')" class="px-2 py-1 text-[10px] bg-yellow-100 border border-yellow-300 rounded hover:bg-yellow-200">Giấy cổ</button>
+                                <button onclick="setCanvasBg('#0f172a')" class="px-2 py-1 text-[10px] bg-slate-900 text-white border border-slate-700 rounded hover:bg-slate-800">Dark</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </aside>
+
+        <!-- RIGHT COLUMN: Live Interactive Preview & Generated Code (7 cols) -->
+        <section class="lg:col-span-7 space-y-6">
+
+            <!-- Live Preview Card -->
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden flex flex-col">
+                <div class="bg-slate-900 text-slate-200 px-5 py-3 border-b border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                        <span class="text-xs font-mono text-slate-400 ml-2">Live Canvas Preview</span>
+                    </div>
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">Cập nhật thời gian thực</span>
+                </div>
+
+                <!-- Preview Area Container -->
+                <div id="preview-container" class="p-8 sm:p-10 min-h-[380px] transition-all duration-200 flex flex-col justify-center space-y-4">
+                    
+                    <!-- H1 Tag -->
+                    <h1 id="pv-h1" class="transition-all duration-150">
+                        Nghệ Thuật Định Dạng Văn Bản Trực Quan Trong CSS
+                    </h1>
+
+                    <!-- Paragraph 1 -->
+                    <p id="pv-p1" class="transition-all duration-150">
+                        CSS cung cấp một hệ thống thuộc tính phong phú giúp nhà phát triển web kiểm soát tỉ mỉ cách văn bản hiển thị trên màn hình. Từ việc căn lề dòng chữ, tạo độ lùi đầu dòng cho chuẩn phong cách báo chí, cho đến việc lựa chọn kiểu phông chữ và màu sắc hài hòa.
+                    </p>
+
+                    <!-- Blockquote -->
+                    <blockquote id="pv-quote" class="p-4 rounded-r-lg border-l-4 transition-all duration-150 my-2">
+                        "Kiến trúc trang web giống như trình bày một cuốn sách hay: Typography tốt sẽ dẫn dắt người đọc tiếp thu tri thức một cách tự nhiên và đầy cảm hứng."
+                    </blockquote>
+
+                    <!-- Paragraph 2 -->
+                    <p id="pv-p2" class="transition-all duration-150">
+                        Khi áp dụng thuộc tính lùi đầu dòng, văn bản sẽ có khoảng trống trang trọng ở mỗi đoạn mới. Bạn cũng có thể tìm hiểu thêm tài liệu chi tiết tại <a id="pv-link" href="#" onclick="event.preventDefault();">Trang học CSS W3Schools Việt Nam</a> để củng cố kỹ năng làm chủ giao diện web.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Generated Code Tabs Card -->
+            <div class="bg-slate-900 rounded-2xl shadow-xl overflow-hidden border border-slate-800 flex flex-col">
+                <div class="bg-slate-950 px-4 py-2.5 border-b border-slate-800 flex items-center justify-between flex-wrap gap-2">
+                    <!-- Code View Switcher -->
+                    <div class="flex items-center space-x-1">
+                        <button onclick="switchCodeTab('css')" id="code-tab-css" class="px-3 py-1.5 text-xs font-mono rounded-lg transition text-white bg-slate-800 border border-slate-700 flex items-center space-x-1">
+                            <span class="text-sky-400 font-bold">#</span>
+                            <span>style.css</span>
+                        </button>
+                        <button onclick="switchCodeTab('html')" id="code-tab-html" class="px-3 py-1.5 text-xs font-mono rounded-lg transition text-slate-400 hover:bg-slate-800 flex items-center space-x-1">
+                            <span class="text-orange-400 font-bold">&lt;/&gt;</span>
+                            <span>index.html</span>
+                        </button>
+                    </div>
+
+                    <!-- Copy Buttons -->
+                    <div class="flex items-center space-x-2">
+                        <button onclick="copyCurrentCode()" class="px-3 py-1.5 text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg transition shadow flex items-center space-x-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <span>Sao Chép Mã</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Code Text Display -->
+                <div class="p-4 overflow-x-auto font-mono text-xs leading-relaxed text-slate-300 max-h-[300px]" id="code-display-box">
+                    <!-- Code injected via JS -->
+                </div>
+            </div>
+
+            <!-- CSS Cheat Sheet & Common Typo Warning Box -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-5">
+                <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full">Lưu ý quan trọng cho bài tập</span>
+                        <h3 class="text-base font-bold text-slate-900 mt-1">Bảng Sửa Lỗi Từ Vựng & Thuộc Tính Định Dạng Văn Bản CSS</h3>
+                    </div>
+                </div>
+
+                <!-- Common Typos Alert Box -->
+                <div class="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-xl text-xs space-y-2">
+                    <p class="font-bold text-rose-900 flex items-center space-x-1.5">
+                        <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        <span>Cảnh báo từ vựng sai phổ biến trong bài tập CSS:</span>
+                    </p>
+                    <ul class="list-disc list-inside space-y-1 text-rose-800">
+                        <li>❌ <code class="bg-rose-200/80 px-1 rounded font-mono font-bold">text-identation</code> &rarr; ✅ Đúng phải là <code class="bg-emerald-100 text-emerald-900 font-mono font-bold px-1.5 py-0.5 rounded">text-indent</code> (Lùi đầu dòng).</li>
+                        <li>❌ <code class="bg-rose-200/80 px-1 rounded font-mono font-bold">text-style</code> &rarr; ✅ Không tồn tại! Dùng <code class="bg-emerald-100 text-emerald-900 font-mono font-bold px-1.5 py-0.5 rounded">font-style</code> (thường/nghiêng) hoặc <code class="bg-emerald-100 text-emerald-900 font-mono font-bold px-1.5 py-0.5 rounded">text-decoration</code> (gạch chân).</li>
+                    </ul>
+                </div>
+
+                <!-- Quick Summary Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-100 text-slate-700 font-semibold uppercase">
+                            <tr>
+                                <th class="p-2.5 border-b">Thuộc tính CSS</th>
+                                <th class="p-2.5 border-b">Giá trị phổ biến</th>
+                                <th class="p-2.5 border-b">Ý nghĩa / Chức năng</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-slate-600">
+                            <tr>
+                                <td class="p-2.5 font-mono text-indigo-600 font-bold">text-indent</td>
+                                <td class="p-2.5 font-mono">20px, 2em, 5%</td>
+                                <td class="p-2.5">Thụt/Lùi đầu dòng của dòng đầu tiên trong đoạn văn.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-mono text-indigo-600 font-bold">text-align</td>
+                                <td class="p-2.5 font-mono">left, center, right, justify</td>
+                                <td class="p-2.5">Căn lề văn bản (Trái, Giữa, Phải, Đều 2 bên).</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-mono text-indigo-600 font-bold">color</td>
+                                <td class="p-2.5 font-mono">#333, red, rgb(...)</td>
+                                <td class="p-2.5">Thay đổi màu sắc chữ.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-mono text-indigo-600 font-bold">font-size</td>
+                                <td class="p-2.5 font-mono">16px, 1.2rem, 100%</td>
+                                <td class="p-2.5">Kích thước chữ.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-mono text-indigo-600 font-bold">font-style</td>
+                                <td class="p-2.5 font-mono">normal, italic</td>
+                                <td class="p-2.5">Kiểu chữ đứng thẳng hoặc in nghiêng.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-mono text-indigo-600 font-bold">text-transform</td>
+                                <td class="p-2.5 font-mono">uppercase, lowercase, capitalize</td>
+                                <td class="p-2.5">Chuyển đổi kiểu chữ in HOA, viết thường hoặc hoa đầu từ.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-mono text-indigo-600 font-bold">line-height</td>
+                                <td class="p-2.5 font-mono">1.5, 1.8, 24px</td>
+                                <td class="p-2.5">Chiều cao hàng/khoảng cách giữa các dòng văn bản.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 py-6 text-xs mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-1">
+            <p class="font-medium text-slate-300">Công cụ học tập & Làm bài tập "Định dạng văn bản với CSS"</p>
+            <p class="text-slate-500">Tự động sinh mã chuẩn HTML/CSS • Tương thích mọi trình duyệt</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global App State
+        const state = {
+            activeControlTab: 'h1', // 'h1' | 'p' | 'quote'
+            activeCodeTab: 'css',   // 'css' | 'html'
+            
+            // H1 properties
+            h1FontFamily: "'Playfair Display', serif",
+            h1FontWeight: '700',
+            h1Align: 'left',
+            h1Color: '#1e293b',
+            h1BgColor: '#ffffff',
+            h1Size: 28,
+            h1LineHeight: 1.3,
+            h1TextTransform: 'none',
+            h1FontStyle: 'normal',
+            h1TextDecoration: 'none',
+            h1TextShadow: 'none',
+
+            // Paragraph properties
+            pAlign: 'justify',
+            pIndent: 2.0, // in em
+            pColor: '#334155',
+            pFontFamily: "'Roboto', sans-serif",
+            pSize: 16,
+            pLineHeight: 1.7,
+            pLetterSpacing: 0,
+            pFontStyle: 'normal',
+            pTextTransform: 'none',
+
+            // Quote & Link properties
+            quoteBorderColor: '#6366f1',
+            quoteBgColor: '#f8fafc',
+            quoteFontStyle: 'italic',
+            linkColor: '#2563eb',
+            linkDecoration: 'underline',
+
+            // Canvas Background
+            canvasBg: '#ffffff'
+        };
+
+        // Initialize state on DOM load
+        window.addEventListener('DOMContentLoaded', () => {
+            updateAllStyles();
+        });
+
+        // Tab Switching for Controls
+        function switchControlTab(tabKey) {
+            state.activeControlTab = tabKey;
+            
+            // Hide all sections
+            document.querySelectorAll('.control-panel-section').forEach(el => el.classList.add('hidden'));
+            
+            // Show selected
+            document.getElementById(`controls-${tabKey}`).classList.remove('hidden');
+
+            // Update Tab Button styles
+            document.querySelectorAll('.tab-control-btn').forEach(btn => {
+                btn.className = "tab-control-btn px-3 py-2 text-xs font-bold rounded-lg transition text-slate-600 hover:text-slate-900";
+            });
+
+            const activeBtn = document.getElementById(`tab-btn-${tabKey}`);
+            if (activeBtn) {
+                activeBtn.className = "tab-control-btn px-3 py-2 text-xs font-bold rounded-lg transition bg-white text-indigo-600 shadow-sm border border-slate-200";
+            }
+        }
+
+        // Tab Switching for Generated Code View
+        function switchCodeTab(codeKey) {
+            state.activeCodeTab = codeKey;
+
+            const btnCss = document.getElementById('code-tab-css');
+            const btnHtml = document.getElementById('code-tab-html');
+
+            if (codeKey === 'css') {
+                btnCss.className = "px-3 py-1.5 text-xs font-mono rounded-lg transition text-white bg-slate-800 border border-slate-700 flex items-center space-x-1";
+                btnHtml.className = "px-3 py-1.5 text-xs font-mono rounded-lg transition text-slate-400 hover:bg-slate-800 flex items-center space-x-1";
+            } else {
+                btnHtml.className = "px-3 py-1.5 text-xs font-mono rounded-lg transition text-white bg-slate-800 border border-slate-700 flex items-center space-x-1";
+                btnCss.className = "px-3 py-1.5 text-xs font-mono rounded-lg transition text-slate-400 hover:bg-slate-800 flex items-center space-x-1";
+            }
+            renderCodeBox();
+        }
+
+        // Set Text Align helper
+        function setTextAlign(tag, alignValue) {
+            if (tag === 'h1') {
+                state.h1Align = alignValue;
+                document.querySelectorAll('.align-btn-h1').forEach(b => {
+                    b.className = "align-btn-h1 py-1 text-xs rounded font-medium transition text-center text-slate-600";
+                });
+                document.getElementById(`btn-h1-align-${alignValue}`).className = "align-btn-h1 py-1 text-xs rounded font-medium transition text-center bg-white shadow text-indigo-600 font-bold";
+            } else if (tag === 'p') {
+                state.pAlign = alignValue;
+                document.querySelectorAll('.align-btn-p').forEach(b => {
+                    b.className = "align-btn-p py-1 text-xs rounded font-medium transition text-center text-slate-600";
+                });
+                document.getElementById(`btn-p-align-${alignValue}`).className = "align-btn-p py-1 text-xs rounded font-medium transition text-center bg-white shadow text-indigo-600 font-bold";
+            }
+            updateAllStyles();
+        }
+
+        // Quick set canvas background color
+        function setCanvasBg(colorHex) {
+            document.getElementById('canvas-bg').value = colorHex;
+            updateAllStyles();
+        }
+
+        // Update All Styles from Inputs & Apply to Preview & Code Generator
+        function updateAllStyles() {
+            // Read H1 inputs
+            state.h1FontFamily = document.getElementById('h1-font-family').value;
+            state.h1FontWeight = document.getElementById('h1-font-weight').value;
+            state.h1Color = document.getElementById('h1-color').value;
+            state.h1BgColor = document.getElementById('h1-bg-color').value;
+            state.h1Size = parseInt(document.getElementById('h1-size').value);
+            state.h1LineHeight = parseFloat(document.getElementById('h1-lineheight').value);
+            state.h1TextTransform = document.getElementById('h1-text-transform').value;
+            state.h1FontStyle = document.getElementById('h1-font-style').value;
+            state.h1TextDecoration = document.getElementById('h1-text-decoration').value;
+            state.h1TextShadow = document.getElementById('h1-text-shadow').value;
+
+            // Read P inputs
+            state.pIndent = parseFloat(document.getElementById('p-indent').value);
+            state.pColor = document.getElementById('p-color').value;
+            state.pFontFamily = document.getElementById('p-font-family').value;
+            state.pSize = parseInt(document.getElementById('p-size').value);
+            state.pLineHeight = parseFloat(document.getElementById('p-lineheight').value);
+            state.pLetterSpacing = parseFloat(document.getElementById('p-letterspacing').value);
+            state.pFontStyle = document.getElementById('p-font-style').value;
+            state.pTextTransform = document.getElementById('p-text-transform').value;
+
+            // Read Quote & Link inputs
+            state.quoteBorderColor = document.getElementById('quote-border-color').value;
+            state.quoteBgColor = document.getElementById('quote-bg-color').value;
+            state.quoteFontStyle = document.getElementById('quote-font-style').value;
+            state.linkColor = document.getElementById('link-color').value;
+            state.linkDecoration = document.getElementById('link-decoration').value;
+
+            // Read Canvas BG
+            state.canvasBg = document.getElementById('canvas-bg').value;
+
+            // Update UI Labels
+            document.getElementById('h1-color-val').innerText = state.h1Color.toUpperCase();
+            document.getElementById('h1-bg-color-val').innerText = state.h1BgColor.toUpperCase();
+            document.getElementById('h1-size-val').innerText = state.h1Size + 'px';
+            document.getElementById('h1-lineheight-val').innerText = state.h1LineHeight;
+
+            document.getElementById('p-indent-val').innerText = state.pIndent + 'em';
+            document.getElementById('p-color-val').innerText = state.pColor.toUpperCase();
+            document.getElementById('p-size-val').innerText = state.pSize + 'px';
+            document.getElementById('p-lineheight-val').innerText = state.pLineHeight;
+            document.getElementById('p-letterspacing-val').innerText = state.pLetterSpacing + 'px';
+            document.getElementById('canvas-bg-val').innerText = state.canvasBg.toUpperCase();
+
+            // Apply directly to Preview DOM Elements
+            const container = document.getElementById('preview-container');
+            container.style.backgroundColor = state.canvasBg;
+
+            const h1El = document.getElementById('pv-h1');
+            h1El.style.fontFamily = state.h1FontFamily;
+            h1El.style.fontWeight = state.h1FontWeight;
+            h1El.style.textAlign = state.h1Align;
+            h1El.style.color = state.h1Color;
+            h1El.style.backgroundColor = state.h1BgColor === '#ffffff' ? 'transparent' : state.h1BgColor;
+            h1El.style.fontSize = state.h1Size + 'px';
+            h1El.style.lineHeight = state.h1LineHeight;
+            h1El.style.textTransform = state.h1TextTransform;
+            h1El.style.fontStyle = state.h1FontStyle;
+            h1El.style.textDecoration = state.h1TextDecoration;
+            h1El.style.textShadow = state.h1TextShadow;
+
+            const applyPStyles = (pEl) => {
+                pEl.style.textAlign = state.pAlign;
+                pEl.style.textIndent = state.pIndent + 'em';
+                pEl.style.color = state.pColor;
+                pEl.style.fontFamily = state.pFontFamily;
+                pEl.style.fontSize = state.pSize + 'px';
+                pEl.style.lineHeight = state.pLineHeight;
+                pEl.style.letterSpacing = state.pLetterSpacing + 'px';
+                pEl.style.fontStyle = state.pFontStyle;
+                pEl.style.textTransform = state.pTextTransform;
+            };
+
+            applyPStyles(document.getElementById('pv-p1'));
+            applyPStyles(document.getElementById('pv-p2'));
+
+            const quoteEl = document.getElementById('pv-quote');
+            quoteEl.style.borderLeftColor = state.quoteBorderColor;
+            quoteEl.style.backgroundColor = state.quoteBgColor;
+            quoteEl.style.fontStyle = state.quoteFontStyle;
+            quoteEl.style.color = state.pColor;
+
+            const linkEl = document.getElementById('pv-link');
+            linkEl.style.color = state.linkColor;
+            linkEl.style.textDecoration = state.linkDecoration;
+
+            // Render Generated Code Output
+            renderCodeBox();
+        }
+
+        // Presets Manager
+        function applyPreset(presetType) {
+            if (presetType === 'newspaper') {
+                // Newspaper Journal style
+                document.getElementById('h1-font-family').value = "'Playfair Display', serif";
+                document.getElementById('h1-font-weight').value = "700";
+                setTextAlign('h1', 'center');
+                document.getElementById('h1-color').value = "#0f172a";
+                document.getElementById('h1-bg-color').value = "#ffffff";
+                document.getElementById('h1-size').value = 32;
+                document.getElementById('h1-lineheight').value = 1.2;
+                document.getElementById('h1-text-transform').value = "none";
+                document.getElementById('h1-font-style').value = "normal";
+
+                setTextAlign('p', 'justify');
+                document.getElementById('p-indent').value = 2.5;
+                document.getElementById('p-color').value = "#1e293b";
+                document.getElementById('p-font-family').value = "'Merriweather', serif";
+                document.getElementById('p-size').value = 15;
+                document.getElementById('p-lineheight').value = 1.8;
+                document.getElementById('p-letterspacing').value = 0;
+
+                setCanvasBg('#ffffff');
+                showToast('Đã áp dụng mẫu "Báo chí chuẩn"!', 'info');
+            } else if (presetType === 'poetry') {
+                // Art & Poetry style
+                document.getElementById('h1-font-family').value = "'Playfair Display', serif";
+                document.getElementById('h1-font-weight').value = "600";
+                setTextAlign('h1', 'center');
+                document.getElementById('h1-color').value = "#6b21a8";
+                document.getElementById('h1-bg-color').value = "#ffffff";
+                document.getElementById('h1-size').value = 30;
+                document.getElementById('h1-text-transform').value = "capitalize";
+                document.getElementById('h1-font-style').value = "italic";
+
+                setTextAlign('p', 'center');
+                document.getElementById('p-indent').value = 0;
+                document.getElementById('p-color').value = "#4c1d95";
+                document.getElementById('p-font-family').value = "'Merriweather', serif";
+                document.getElementById('p-size').value = 17;
+                document.getElementById('p-lineheight').value = 2.0;
+                document.getElementById('p-letterspacing').value = 1.0;
+                document.getElementById('p-font-style').value = "italic";
+
+                setCanvasBg('#faf5ff');
+                showToast('Đã áp dụng mẫu "Thơ & Nghệ thuật"!', 'info');
+            } else if (presetType === 'blog') {
+                // Modern Blog style
+                document.getElementById('h1-font-family').value = "'Montserrat', sans-serif";
+                document.getElementById('h1-font-weight').value = "800";
+                setTextAlign('h1', 'left');
+                document.getElementById('h1-color').value = "#2563eb";
+                document.getElementById('h1-bg-color').value = "#ffffff";
+                document.getElementById('h1-size').value = 26;
+                document.getElementById('h1-text-transform').value = "uppercase";
+                document.getElementById('h1-font-style').value = "normal";
+
+                setTextAlign('p', 'left');
+                document.getElementById('p-indent').value = 1.5;
+                document.getElementById('p-color').value = "#334155";
+                document.getElementById('p-font-family').value = "'Roboto', sans-serif";
+                document.getElementById('p-size').value = 16;
+                document.getElementById('p-lineheight').value = 1.6;
+                document.getElementById('p-letterspacing').value = 0;
+
+                setCanvasBg('#f8fafc');
+                showToast('Đã áp dụng mẫu "Modern Blog"!', 'info');
+            }
+
+            updateAllStyles();
+        }
+
+        // Generate Clean CSS String
+        function getCssString() {
+            return `/* File: style.css - Định dạng văn bản với CSS */
+
+/* Định dạng toàn bộ trang */
+body {
+    background-color: ${state.canvasBg};
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+/* 1. Định dạng Tiêu đề Heading 1 */
+h1 {
+    font-family: ${state.h1FontFamily};
+    font-weight: ${state.h1FontWeight};
+    text-align: ${state.h1Align};
+    color: ${state.h1Color};${state.h1BgColor !== '#ffffff' ? `\n    background-color: ${state.h1BgColor};` : ''}
+    font-size: ${state.h1Size}px;
+    line-height: ${state.h1LineHeight};
+    text-transform: ${state.h1TextTransform};
+    font-style: ${state.h1FontStyle};
+    text-decoration: ${state.h1TextDecoration};${state.h1TextShadow !== 'none' ? `\n    text-shadow: ${state.h1TextShadow};` : ''}
+    margin-bottom: 20px;
+}
+
+/* 2. Định dạng Đoạn văn (Paragraphs) */
+p {
+    text-align: ${state.pAlign};
+    text-indent: ${state.pIndent}em; /* Thuộc tính lùi đầu dòng chuẩn */
+    color: ${state.pColor};
+    font-family: ${state.pFontFamily};
+    font-size: ${state.pSize}px;
+    line-height: ${state.pLineHeight};
+    letter-spacing: ${state.pLetterSpacing}px;
+    font-style: ${state.pFontStyle};
+    text-transform: ${state.pTextTransform};
+    margin-bottom: 16px;
+}
+
+/* 3. Định dạng Thẻ trích dẫn */
+blockquote {
+    border-left: 4px solid ${state.quoteBorderColor};
+    background-color: ${state.quoteBgColor};
+    font-style: ${state.quoteFontStyle};
+    padding: 12px 16px;
+    margin: 16px 0;
+}
+
+/* 4. Định dạng Thẻ liên kết */
+a {
+    color: ${state.linkColor};
+    text-decoration: ${state.linkDecoration};
+}`;
+        }
+
+        // Generate Clean Standalone HTML String
+        function getHtmlString() {
+            return `<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Tập Định Dạng Văn Bản Với CSS</title>
+    <!-- Nhúng Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@600;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Roboto:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Liên kết tới file CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Nghệ Thuật Định Dạng Văn Bản Trực Quan Trong CSS</h1>
+
+    <p>
+        CSS cung cấp một hệ thống thuộc tính phong phú giúp nhà phát triển web kiểm soát tỉ mỉ cách văn bản hiển thị trên màn hình. Từ việc căn lề dòng chữ, tạo độ lùi đầu dòng cho chuẩn phong cách báo chí, cho đến việc lựa chọn kiểu phông chữ và màu sắc hài hòa.
+    </p>
+
+    <blockquote>
+        "Kiến trúc trang web giống như trình bày một cuốn sách hay: Typography tốt sẽ dẫn dắt người đọc tiếp thu tri thức một cách tự nhiên và đầy cảm hứng."
+    </blockquote>
+
+    <p>
+        Khi áp dụng thuộc tính lùi đầu dòng, văn bản sẽ có khoảng trống trang trọng ở mỗi đoạn mới. Bạn cũng có thể tìm hiểu thêm tài liệu chi tiết tại <a href="#">Trang học CSS W3Schools Việt Nam</a> để củng cố kỹ năng làm chủ giao diện web.
+    </p>
+
+</body>
+</html>`;
+        }
+
+        // Syntax Highlighter Helper
+        function highlightSyntax(rawCode) {
+            return rawCode
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="code-syntax-comment">$1</span>')
+                .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="code-syntax-comment">$1</span>')
+                .replace(/([a-zA-Z0-9\-_]+)\s*\{/g, '<span class="code-syntax-selector">$1</span> {')
+                .replace(/([a-zA-Z\-]+):/g, '<span class="code-syntax-prop">$1</span>:')
+                .replace(/(&lt;\/?[a-zA-Z0-9]+)/g, '<span class="code-syntax-tag">$1</span>')
+                .replace(/\s([a-zA-Z\-]+)=/g, ' <span class="code-syntax-attr">$1</span>=')
+                .replace(/="([^"]*)"/g, '="<span class="code-syntax-val">$1</span>"');
+        }
+
+        // Render Generated Code into Display Box
+        function renderCodeBox() {
+            const rawCode = state.activeCodeTab === 'css' ? getCssString() : getHtmlString();
+            document.getElementById('code-display-box').innerHTML = `<pre><code>${highlightSyntax(rawCode)}</code></pre>`;
+        }
+
+        // Copy Code to Clipboard
+        function copyCurrentCode() {
+            const rawCode = state.activeCodeTab === 'css' ? getCssString() : getHtmlString();
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = rawCode;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast(`Đã sao chép mã ${state.activeCodeTab.toUpperCase()} vào clipboard!`, 'success');
+            } catch (err) {
+                showToast('Lỗi sao chép mã.', 'error');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // Download Ready-to-Submit Standalone HTML File
+        function downloadStandaloneHtml() {
+            const standaloneContent = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Tập Định Dạng Văn Bản Với CSS</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@600;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Roboto:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    
+    <!-- CSS Internal Style -->
+    <style>
+${getCssString()}
+    </style>
+</head>
+<body>
+
+    <h1>Nghệ Thuật Định Dạng Văn Bản Trực Quan Trong CSS</h1>
+
+    <p>
+        CSS cung cấp một hệ thống thuộc tính phong phú giúp nhà phát triển web kiểm soát tỉ mỉ cách văn bản hiển thị trên màn hình. Từ việc căn lề dòng chữ, tạo độ lùi đầu dòng cho chuẩn phong cách báo chí, cho đến việc lựa chọn kiểu phông chữ và màu sắc hài hòa.
+    </p>
+
+    <blockquote>
+        "Kiến trúc trang web giống như trình bày một cuốn sách hay: Typography tốt sẽ dẫn dắt người đọc tiếp thu tri thức một cách tự nhiên và đầy cảm hứng."
+    </blockquote>
+
+    <p>
+        Khi áp dụng thuộc tính lùi đầu dòng, văn bản sẽ có khoảng trống trang trọng ở mỗi đoạn mới. Bạn cũng có thể tìm hiểu thêm tài liệu chi tiết tại <a href="#">Trang học CSS W3Schools Việt Nam</a> để củng cố kỹ năng làm chủ giao diện web.
+    </p>
+
+</body>
+</html>`;
+
+            const blob = new Blob([standaloneContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'bai_tap_dinh_dang_van_ban.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('Đã tải xuống file bai_tap_dinh_dang_van_ban.html hoàn chỉnh!', 'success');
+        }
+
+        // Custom Toast Notification System
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            let bgStyle = 'bg-slate-900 border-slate-700 text-white';
+            if (type === 'success') bgStyle = 'bg-emerald-600 text-white shadow-xl';
+            if (type === 'info') bgStyle = 'bg-indigo-600 text-white shadow-xl';
+
+            toast.className = `pointer-events-auto px-4 py-3 rounded-xl border text-xs font-semibold flex items-center space-x-2 transition-all duration-300 transform translate-y-2 opacity-0 ${bgStyle}`;
+            toast.innerHTML = `
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
